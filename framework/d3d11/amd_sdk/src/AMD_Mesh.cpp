@@ -27,6 +27,7 @@
 #include "SDKmesh.h"
 
 #include "AMD_Mesh.h"
+#include <string>
 
 #ifndef AMD_SDK_MINIMAL
 #include "assimp/scene.h"
