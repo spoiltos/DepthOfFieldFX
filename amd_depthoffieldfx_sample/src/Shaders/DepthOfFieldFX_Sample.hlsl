@@ -132,6 +132,32 @@ void CalcDirectionalLight(in const DirectionalLightInfo light, in const float3 w
     lightColor += specFactor * light.color * g_Model.m_Specular.rgb;
 }
 
+
+float4 compute_parallax_uv(float view_dot_normal)
+{
+	const int k_num_samples = lerp(10, 2, view_dot_normal) + 0.5f;
+	const int ray_height = view_dot_normal;
+
+	[loop]
+	for (int i = 0; i < k_num_samples; ++i)
+	{
+		const float texture_height = i;
+
+		const float height_difference = texture_height - ray_height;
+
+		//[flatten] // <-- Workaround for AMD shader compiler
+		if (height_difference > 0.0f)
+		{
+			clip(-(i == 0));
+
+			return 1;
+		}
+	}
+
+	clip(-1);
+	return 0;
+}
+
 //--------------------------------------------------------------------------------------
 //
 //--------------------------------------------------------------------------------------
@@ -152,6 +178,8 @@ PS_RenderOutput PS_RenderModel(PS_RenderInput In)
 
     PS_RenderOutput Out;
     Out.m_Color = float4(color, 1.0);
+
+	Out.m_Color *= compute_parallax_uv(texColor.x);
 
     return Out;
 }

@@ -625,7 +625,7 @@ HRESULT CALLBACK OnD3D11CreateDevice(ID3D11Device* pd3dDevice, const DXGI_SURFAC
 
 void SetCameraProjectionParameters()
 {
-    float fov = 2 * atan(0.5f * g_sensorWidth / g_FocalLength);
+    float fov = 2 * (float)atan(0.5f * g_sensorWidth / g_FocalLength);
     // Setup the camera's projection parameters
     FLOAT fAspectRatio = (float)g_ScreenWidth / (float)g_ScreenHeight;
     g_Viewer.SetProjParams(fov, fAspectRatio, 0.1f, 200.0f);
@@ -1102,7 +1102,7 @@ void CALLBACK OnD3D11ReleasingSwapChain(void* pUserContext) { g_DialogResourceMa
 HRESULT CompileShader(const wchar_t* pFilename, const char* entryPoint, const char* target, ID3DBlob** ppCode)
 {
     ID3DBlob* error_blob = NULL;
-    HRESULT   hr         = D3DCompileFromFile(pFilename, NULL, NULL, entryPoint, target, D3DCOMPILE_DEBUG, 0, ppCode, &error_blob);
+    HRESULT   hr         = D3DCompileFromFile(pFilename, NULL, NULL, entryPoint, target, D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, ppCode, &error_blob);
     if (error_blob != NULL)
     {
         OutputDebugStringA((LPCSTR)error_blob->GetBufferPointer());
